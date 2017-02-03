@@ -4,7 +4,7 @@ module Thredded
     enum reason: [:manual, :posted, :mentioned]
 
     belongs_to :user, inverse_of: :thredded_topic_follows, class_name: Thredded.user_class
-    belongs_to :topic, inverse_of: :user_follows
+    belongs_to :topic, inverse_of: :user_follows, class_name: Thredded.user_class
 
     validates :user_id, presence: true
     validates :topic_id, presence: true
