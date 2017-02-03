@@ -11,6 +11,10 @@ Thredded.user_class = 'User'
 # This is the column used to search for users' names if/when someone is @ mentioned.
 Thredded.user_name_column = :name
 
+# User display name method, by default thredded uses the user_name_column defined above
+# You may want to use :to_s or some more elaborate method
+# Thredded.user_display_name_method = :to_s
+
 # The path (or URL) you will use to link to your users' profiles.
 # When linking to a user, Thredded will use this lambda to spit out
 # the path or url to your user. This lambda is evaluated in the view context.
@@ -37,8 +41,19 @@ Thredded.admin_column = :admin
 # Whether posts and topics pending moderation are visible to regular users.
 Thredded.content_visible_while_pending_moderation = true
 
+# Whether users that are following a topic are listed on topic page.
+Thredded.show_topic_followers = false
+
 # This model can be customized further by overriding a handful of methods on the User model.
 # For more information, see app/models/thredded/user_extender.rb.
+
+# ==> Ordering configuration
+
+# How to calculate the position of messageboards in a list:
+# :position            (default) set the position manually (new messageboards go to the bottom, by creation timestamp)
+# :last_post_at_desc   most recent post first
+# :topics_count_desc   most topics first
+Thredded.messageboards_order = :position
 
 # ==> Email Configuration
 # Email "From:" field will use the following

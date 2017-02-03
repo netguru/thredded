@@ -67,10 +67,12 @@ module Thredded
              class_name: 'Thredded::UserTopicFollow',
              inverse_of: :topic,
              dependent: :destroy
-    has_many :following_users,
+    has_many :followers,
              class_name: Thredded.user_class,
              source: :user,
              through: :user_follows
+
+    delegate :name, to: :messageboard, prefix: true
 
     after_commit :update_messageboard_last_topic, on: :update, if: -> { previous_changes.include?('moderation_state') }
     after_update :update_last_user_and_time_from_last_post!, if: -> { previous_changes.include?('moderation_state') }
@@ -126,11 +128,11 @@ module Thredded
       scope = scope.moderation_state_visible_to_all if moderation_state_visible_to_all?
       last_post = scope.select(:user_id, :created_at).first
       if last_post
-        update_columns(last_user_id: last_post.user_id, updated_at: last_post.created_at)
+        update_columns(last_user_id: last_post.user_id, last_post_at: last_post.created_at, updated_at: Time.zone.now)
       else
         # Either a visible topic is left with no visible posts, or an invisible topic is left with no posts at all.
         # This shouldn't happen in stock Thredded.
-        update_columns(last_user_id: nil, updated_at: created_at)
+        update_columns(last_user_id: nil, last_post_at: created_at, updated_at: Time.zone.now)
       end
     end
 

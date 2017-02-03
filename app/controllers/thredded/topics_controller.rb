@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_dependency 'thredded/posts_page_view'
 require_dependency 'thredded/topics_page_view'
+# rubocop:disable Metrics/ClassLength
 module Thredded
   class TopicsController < Thredded::ApplicationController
     before_action :thredded_require_login!,
@@ -16,7 +17,7 @@ module Thredded
       @topics = Thredded::TopicsPageView.new(
         thredded_current_user,
         policy_scope(messageboard.topics)
-          .order_sticky_first.order_recently_updated_first
+          .order_sticky_first.order_recently_posted_first
           .includes(:categories, :last_user, :user)
           .page(current_page)
       )
@@ -52,7 +53,7 @@ module Thredded
         thredded_current_user,
         topics_scope
           .search_query(@query)
-          .order_recently_updated_first
+          .order_recently_posted_first
           .includes(:categories, :last_user, :user)
           .page(current_page)
       )
@@ -70,7 +71,7 @@ module Thredded
         thredded_current_user,
         policy_scope(@category.topics)
           .unstuck
-          .order_recently_updated_first
+          .order_recently_posted_first
           .page(current_page)
       )
       render :index
@@ -110,19 +111,24 @@ module Thredded
     def follow
       authorize topic, :read?
       UserTopicFollow.create_unless_exists(thredded_current_user.id, topic.id)
-      redirect_to messageboard_topic_url(messageboard, topic),
-                  notice: t('thredded.topics.followed_notice')
+      follow_change_response(following: true)
     end
 
     def unfollow
       authorize topic, :read?
-      follow = thredded_current_user.following?(topic)
-      follow.destroy if follow
-      redirect_to messageboard_topic_url(messageboard, topic),
-                  notice: t('thredded.topics.unfollowed_notice')
+      UserTopicFollow.find_by(topic_id: topic.id, user_id: thredded_current_user.id).try(:destroy)
+      follow_change_response(following: false)
     end
 
     private
+
+    def follow_change_response(following:)
+      notice = following ? t('thredded.topics.followed_notice') : t('thredded.topics.unfollowed_notice')
+      respond_to do |format|
+        format.html { redirect_to messageboard_topic_url(messageboard, topic), notice: notice }
+        format.json { render(json: { follow: following }) }
+      end
+    end
 
     def topic
       @topic ||= messageboard.topics.find_by_slug!(params[:id])
@@ -150,3 +156,4 @@ module Thredded
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

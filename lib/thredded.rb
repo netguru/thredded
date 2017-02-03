@@ -32,7 +32,9 @@ module Thredded
     :email_outgoing_prefix,
     :email_reply_to,
     :layout,
+    :messageboards_order,
     :user_class,
+    :user_display_name_method,
     :user_name_column,
     :user_path
 
@@ -48,6 +50,12 @@ module Thredded
   # @return [Boolean] Whether posts that are pending moderation are visible to regular users.
   mattr_accessor :content_visible_while_pending_moderation
 
+  # @return [Boolean] Whether users that are following a topic are listed on topic page.
+  mattr_accessor :show_topic_followers
+
+  # @return [Symbol] The name of the method used by Thredded to display users
+  mattr_accessor :user_display_name_method
+
   self.active_user_threshold = 5.minutes
   self.admin_column = :admin
   self.avatar_url = ->(user) { Gravatar.src(user.email, 128, 'mm') }
@@ -56,6 +64,22 @@ module Thredded
   self.moderator_column = :admin
   self.user_name_column = :name
   self.content_visible_while_pending_moderation = true
+  self.show_topic_followers = false
+  self.messageboards_order = :position
+
+  def self.user_display_name_method
+    @@user_display_name_method || user_name_column
+  end
+
+  # @param value [:position, :topics_count_desc, :last_post_at_desc]
+  def self.messageboards_order=(value)
+    case value
+    when :position, :topics_count_desc, :last_post_at_desc
+      @@messageboards_order = value # rubocop:disable Style/ClassVars
+    else
+      fail ArgumentError, "Unexpected value for Thredded.messageboards_order: #{value}"
+    end
+  end
 
   # @return [Class<Thredded::UserExtender>] the user class from the host application.
   def self.user_class

@@ -1,6 +1,55 @@
+# v0.7.0
+
+This release contains new functionality and backwards-incompatible changes.
+
+**NB:** If updating to this version from 0.6.x, you will need to copy and run [this migration](https://github.com/thredded/thredded/blob/1aba2433d7df1bd00478dd156d8f2526d36aad55/db/upgrade_migrations/20160723012349_upgrade_v0_6_to_v0_7.rb) after upgrading the gem.
+
+## Added
+
+* Messageboard ordering is now configurable. Three options are provided:
+  * `position`: (default) set the position manually via the `position` column which defaults to the creation order,
+     newly created messageboards got to the bottom.
+  * `last_post_at_desc`: messageboards with most recent posts first.
+  * `topics_count_desc`: messageboards with most topics first (previous default).
+  Messageboard groups are now ordered by the new `position` column which also defaults to the creation order.
+  [#404](https://github.com/thredded/thredded/pull/404)
+* The users that follow a topic can now be displayed on the topic page. This is controlled by a configuration option
+  and is off by default. [#392](https://github.com/thredded/thredded/pull/392)
+
+## Changed
+
+* Messageboard group name uniqueness is now enforced. If you had non-unique names before, the upgrade migration will
+  deduplicate them. If you need to maintain previous behaviour, you can use
+  [this workaround](https://github.com/thredded/thredded/issues/318#issuecomment-242944339).
+  [#318](https://github.com/thredded/thredded/issues/318)
+* Messageboards ordering now defaults to the order they were created in (previously: topics count).
+  [#404](https://github.com/thredded/thredded/pull/404)
+* The read topics in the topics list are now also distinguished from the unread ones by their font weight.
+  [#394](https://github.com/thredded/thredded/pull/394)
+* Following / not following indicators are now displayed on the topics list. The "following" icon ![Follow icon](https://raw.githubusercontent.com/wiki/thredded/thredded/img/follow.png) is displayed on
+  the topic page if the topic is being followed by the user.
+  [#394](https://github.com/thredded/thredded/pull/394)
+
+## Fixed
+
+* Last topic tracking in messageboards now correctly reflects the topic when one is deleted.
+  [#403](https://github.com/thredded/thredded/pull/403)
+* Last post tracking in topics now always correctly reflects the last post and its timestamp. New `last_post_at` columns
+  have been added to `topics` and `private_topics` to enable this.
+  [#405](https://github.com/thredded/thredded/issues/405)
+* Thredded now uses the new `User#thredded_display_name` method for displaying the user's name in links.
+  Previously, Thredded used `User#to_s`. This new method uses `Thredded.user_name_column` by default,
+  simplifying the setup. [#398](https://github.com/thredded/thredded/issues/398)
+
+See the full list of changes here: https://github.com/thredded/thredded/compare/v0.6.3...v0.7.0.
+
 # v0.6.3
 
-This is a minor bugfix release.
+This release contains minor bugfixes and adds a Mark All as Read feature to the private messages.
+
+## Added
+
+* A way to mark all unread private messages as read. [#260](https://github.com/thredded/thredded/pull/260)
 
 ## Fixed
 

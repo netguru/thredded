@@ -1,4 +1,4 @@
-&--topic-header {
+.thredded--topic-header {
   margin-bottom: $thredded-large-spacing;
   margin-top: $thredded-base-spacing;
   @include thredded-media-mobile {
@@ -7,14 +7,14 @@
   }
 }
 
-&--topic-header--title {
+.thredded--topic-header--title {
   @extend %thredded--heading;
   font-size: 1.5rem; // 24px
   line-height: 1.2;
   margin-bottom: $thredded-small-spacing / 2;
 }
 
-&--topic-header--started-by {
+.thredded--topic-header--started-by {
   font-size: $thredded-font-size-small;
   color: $thredded-secondary-text-color;
   font-style: normal;
@@ -23,20 +23,16 @@
   }
 }
 
-&--topic-header--edit-topic {
+.thredded--topic-header--edit-topic {
   @extend %thredded--link;
   font-size: $thredded-font-size-small;
   margin-left: 0.4rem;
 }
-&--topic-follow-info {
+
+.thredded--topic-header--follow-info {
   float: right;
   color: $thredded-secondary-text-color;
-  &.thredded--following {
-    font-size: 0.65rem;
-  }
-  &.thredded--notfollowing {
-    font-size: $thredded-font-size-small;
-  }
+  font-size: $thredded-font-size-small;
   font-style: normal;
   max-width: 60%;
   text-align: right;
@@ -54,4 +50,22 @@
       @extend %thredded--link;
     }
   }
+}
+
+.thredded--topic-following {
+  .thredded--topic-header--follow-info {
+    position: relative;
+  }
+  .thredded--topic-header--follow-icon {
+    @extend %thredded--following-icon;
+  }
+}
+
+.thredded--topic-followers {
+  font-size: $thredded-font-size-small;
+  color: $thredded-secondary-text-color;
+}
+
+.thredded--svg-definitions {
+  display: none;
 }

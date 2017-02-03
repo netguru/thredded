@@ -38,5 +38,9 @@ module Thredded
     def thredded_user_preference
       Thredded::UserPreference.new
     end
+
+    def thredded_display_name
+      to_s
+    end
   end
 end

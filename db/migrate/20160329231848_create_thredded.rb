@@ -37,6 +37,7 @@ class CreateThredded < ActiveRecord::Migration
       t.text :description
       t.integer :topics_count, default: 0
       t.integer :posts_count, default: 0
+      t.integer :position, null: false
       t.boolean :closed, default: false, null: false
       t.references :last_topic
       t.references :messageboard_group
@@ -88,6 +89,7 @@ class CreateThredded < ActiveRecord::Migration
       t.string :slug, limit: 191, null: false
       t.integer :posts_count, default: 0
       t.string :hash_id, limit: 191, null: false
+      t.datetime :last_post_at
       t.timestamps null: false
       t.index [:hash_id], name: :index_thredded_private_topics_on_hash_id
       t.index [:slug], name: :index_thredded_private_topics_on_slug
@@ -120,6 +122,7 @@ class CreateThredded < ActiveRecord::Migration
       t.string :hash_id, limit: 191, null: false
       t.string :type, limit: 191
       t.integer :moderation_state, null: false
+      t.datetime :last_post_at
       t.timestamps null: false
       t.index %i(moderation_state sticky updated_at),
               order: { sticky: :desc, updated_at: :desc },
@@ -188,6 +191,7 @@ class CreateThredded < ActiveRecord::Migration
 
     create_table :thredded_messageboard_groups do |t|
       t.string :name
+      t.integer :position, null: false
       t.timestamps null: false
     end
 
