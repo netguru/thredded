@@ -34,6 +34,10 @@ module Thredded
         .in(user_names)
     end
 
+    def user
+      Thredded.user_class.unscoped { super }
+    end
+
     private
 
     def notify_users

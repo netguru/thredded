@@ -83,6 +83,10 @@ module Thredded
       raise Thredded::Errors::TopicNotFound
     end
 
+    def user
+      Thredded.user_class.unscoped { super }
+    end
+
     class << self
       private
 
