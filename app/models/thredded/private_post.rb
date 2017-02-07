@@ -4,6 +4,7 @@ module Thredded
     include PostCommon
 
     belongs_to :user,
+               -> { with_deleted },
                class_name: Thredded.user_class,
                inverse_of: :thredded_private_posts
     belongs_to :postable,
@@ -32,10 +33,6 @@ module Thredded
       DbTextSearch::CaseInsensitive
         .new(postable.users, Thredded.user_name_column)
         .in(user_names)
-    end
-
-    def user
-      Thredded.user_class.unscoped { super }
     end
 
     private

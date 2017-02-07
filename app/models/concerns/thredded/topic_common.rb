@@ -6,6 +6,7 @@ module Thredded
       paginates_per 50 if respond_to?(:paginates_per)
 
       belongs_to :last_user,
+                 -> { with_deleted },
                  class_name:  Thredded.user_class,
                  foreign_key: 'last_user_id'
 

@@ -29,6 +29,7 @@ module Thredded
                 reserved_words: ::Thredded::FriendlyIdReservedWordsAndPagination.new(%w(topics))
 
     belongs_to :user,
+               -> { with_deleted },
                class_name: Thredded.user_class,
                inverse_of: :thredded_topics
 
@@ -81,10 +82,6 @@ module Thredded
       friendly.find(slug)
     rescue ActiveRecord::RecordNotFound
       raise Thredded::Errors::TopicNotFound
-    end
-
-    def user
-      Thredded.user_class.unscoped { super }
     end
 
     class << self

@@ -5,6 +5,7 @@ module Thredded
     include ContentModerationState
 
     belongs_to :user,
+               -> { with_deleted },
                class_name: Thredded.user_class,
                inverse_of: :thredded_posts
     belongs_to :messageboard,
@@ -47,10 +48,6 @@ module Thredded
       DbTextSearch::CaseInsensitive
         .new(Thredded.user_class.thredded_messageboards_readers([messageboard]), Thredded.user_name_column)
         .in(user_names)
-    end
-
-    def user
-      Thredded.user_class.unscoped { super }
     end
 
     private
